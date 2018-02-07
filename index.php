@@ -11,7 +11,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <style>
 	.loader {
-	  border: 16px solid #f3f3f3;
+	  border: 16px solid rgba(255, 193, 7, 0.3);
 	  border-radius: 50%;
 	  border-top: 16px solid #17a2b8;
 	  width: 120px;
