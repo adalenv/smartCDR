@@ -5,20 +5,38 @@
 <head>
 	<title>CDR</title>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <style>
+	*, ::after, ::before {
+	    box-sizing: border-box;
+	    border-radius: 0px !important;
+	}
+
+	@media only screen and (max-width: 600px) {
+		.card{
+			margin: 0px !important;
+
+		}
+		table{
+			display:  block ;
+		    width: 100%;
+		    overflow-x: auto;
+		}
+	}
 	.loader {
 	  border: 16px solid rgba(255, 193, 7, 0.3);
-	  border-radius: 50%;
+	  border-radius: 50% !important;
 	  border-top: 16px solid #17a2b8;
 	  width: 120px;
 	  height: 120px;
 	  -webkit-animation: spin 2s linear infinite; /* Safari */
 	  animation: spin 2s linear infinite;
-	  margin-bottom: 20px
+	  margin-bottom: 20px;
+	  margin-top: 20px;
 	}
 
 	/* Safari */
@@ -38,19 +56,48 @@
 	.pe{
 		pointer-events:none;
 	}
+	.card{
+		margin: 10px;
+    	margin-left: 20%;
+   		margin-right: 20%;
+	}
+
+	body,form{
+
+background: #007991;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #78ffd6, #007991);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #78ffd6, #007991); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+	}
 
 </style>
 
 </head>
 
 <body>
-	<center>
-	<div class="card" style="width: 50%;margin: 10px">
+
+	<div class="card" >
 	<form method="POST" action="" >
 		<input class="form-control col-md-8" style="float: left;" type="date" name="date" value="<?php if(isset($_POST['date'])){ echo $_POST['date']; } else{ echo date("Y-m-d",strtotime("-1 days")); }; ?>">
 		<input class="btn btn-info col-md-4 sbtn" type="submit" name="submit">
 	</form>
 </body>
+<style type="text/css">
+	footer{
+		width: 100%;
+		position: fixed;
+		bottom: 0;
+		height: 30px;
+		left: 0px;
+		background: white;
+		vertical-align: middle;		
+	}
+</style>
+<footer>
+	<center>
+		<font>© 2018 Adalen Vladi</font>
+	</center>
+</footer>
 </html>
 
 <?php
@@ -78,7 +125,7 @@ if (isset($_POST['submit'])) {
 
 	$result=mysqli_query($con,$query);
 
-	echo "<table id='table' class='table table-striped table-hover'><thead><th onclick='sortTable(0)'>Full Name</th><th onclick='sortTable(1)'>User</th><th onclick='sortTable(2)'>Calls</th><th onclick='sortTable(3)'>Minutes</th><th onclick='sortTable(4)'>AVG Minutes</th></thead>";
+	echo "<table id='table' class='table table-striped table-hover '><thead><th onclick='sortTable(0)'>Full Name</th><th onclick='sortTable(1)'>User</th><th onclick='sortTable(2)'>Calls</th><th onclick='sortTable(3)'>Minutes</th><th onclick='sortTable(4)'>AVG Minutes</th></thead>";
 
 	while ($row=$result->fetch_assoc()) {
 		$min=$row['total_duration']/60;
@@ -86,7 +133,7 @@ if (isset($_POST['submit'])) {
 		$avgmin=$row['total_duration']/$row['total_calls']/60;
 		$avgsec=$row['total_duration']/$row['total_calls']%60;
 		echo"<tr>";
-			echo "<td>".$usersA[$row['src']]."</td><td>".$row['src']."</td><td>".$row['total_calls']."</td><td>".(int)$min.":".(int)$sec."</td><td>".(int)$avgmin.":".(int)$avgsec."</td>";
+			echo "<td>".$usersA[$row['src']]."</td><td>".$row['src']."</td><td>".$row['total_calls']."</td><td>".(int)$min.".".(int)$sec."</td><td>".(int)$avgmin.".".(int)$avgsec."</td>";
 		echo "</tr>";
 	}	
 }
@@ -94,32 +141,62 @@ if (isset($_POST['submit'])) {
 ?>
 <?php if ($_POST['date']) { ?>
 
-<a style="float: right;margin: 30px" class="btn btn-warning ebtn" onclick="tableToExcel(document.querySelector('table'),'<?php echo $_POST['date'] ?>','<?php echo $_POST['date'] ?>')">Export</a>
+<a style="float: right;margin: 30px" class="btn btn-warning ebtn" onclick="exportTableToCSV('<?php echo $_POST['date'] ?>.csv')">Export</a>
 
 <?php } ?>
 
+<center><div class="loader"></div></center>
 </div>
 
-<div class="loader"></div>
 
-</center>
+
 
 <script type="text/javascript">
 
-	function tableToExcel(table, name, filename) {
-        let uri = 'data:application/vnd.ms-excel;base64,', 
-        template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><title></title><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>', 
-        base64 = function(s) { return window.btoa(decodeURIComponent(encodeURIComponent(s))) },         format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; })}
-        
-        if (!table.nodeType) table = $('#'+table).clone();
 
-     	 var ctx = {worksheet: name || 'Worksheet', table: $(table).html()}
-        var link = document.createElement('a');
-        link.download = filename;
-        link.href = uri + base64(format(template, ctx));
-   
-        link.click();
+function downloadCSV(csv, filename) {
+    var csvFile;
+    var downloadLink;
+
+    // CSV file
+    csvFile = new Blob([csv], {type: "text/csv"});
+
+    // Download link
+    downloadLink = document.createElement("a");
+
+    // File name
+    downloadLink.download = filename;
+
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    // Hide download link
+    downloadLink.style.display = "none";
+
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+
+    // Click download link
+    downloadLink.click();
 }
+
+function exportTableToCSV(filename) {
+    var csv = [];
+	var rows = document.querySelectorAll("table tr");
+	
+    for (var i = 0; i < rows.length; i++) {
+		var row = [], cols = rows[i].querySelectorAll("td, th");
+		
+        for (var j = 0; j < cols.length; j++) 
+            row.push(cols[j].innerText);
+        
+		csv.push(row.join(","));		
+	}
+
+    // Download CSV file
+    downloadCSV(csv.join("\n"), filename);
+}
+
 
 function sortTable(n) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -205,3 +282,10 @@ $('.sbtn').on('click', function(event) {
 
 });
 </script>
+
+<?php if ($_POST['date']) { ?>
+
+<script type="text/javascript">
+	 sortTable(0);
+</script>
+<?php } ?>
