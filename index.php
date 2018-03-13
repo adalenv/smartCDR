@@ -112,8 +112,10 @@ if (isset($_POST['submit'])) {
 
 	$users='';
 	$usersA=array();
+	$phones = array();
 	while ($userR=$astResult->fetch_assoc()) {
 		$phone=str_replace('cc','', $userR['user']) ;
+		array_push($phones, $phone);
 		//echo $userR['phone_login'];
 		$users=$users."src='".$phone."' or ";
 		//$push = array($phone => $userR['full_name'] );
@@ -124,8 +126,16 @@ if (isset($_POST['submit'])) {
 	$query="SELECT  src,count(*) AS total_calls, sum(duration), sum(billsec) AS total_duration FROM cdr WHERE ($users) and DATE(`calldate`)=DATE('".$_POST['date']."') group by src ";
 
 	$result=mysqli_query($con,$query);
+	$result1=mysqli_query($con,$query);
 
 	echo "<table id='table' class='table table-striped table-hover '><thead><th onclick='sortTable(0)'>Full Name</th><th onclick='sortTable(1)'>User</th><th onclick='sortTable(2)'>Calls</th><th onclick='sortTable(3)'>Minutes</th><th onclick='sortTable(4)'>AVG Minutes</th></thead>";
+
+	$phones2=array();
+	while ($all=$result1->fetch_assoc()) {
+		array_push($phones2,$all['src']);
+	}
+	
+	$aa=array_diff($phones,$phones2);
 
 	while ($row=$result->fetch_assoc()) {
 		$min=$row['total_duration']/60;
@@ -135,7 +145,12 @@ if (isset($_POST['submit'])) {
 		echo"<tr>";
 			echo "<td>".$usersA[$row['src']]."</td><td>".$row['src']."</td><td>".$row['total_calls']."</td><td>".(int)$min.".".(int)$sec."</td><td>".(int)$avgmin.".".(int)$avgsec."</td>";
 		echo "</tr>";
-	}	
+	}
+	foreach ($aa as $key => $value) {
+		echo"<tr>";
+			echo "<td>".$usersA[$value]."</td><td>".$value."</td><td>0</td><td>0</td><td>0</td>";
+		echo "</tr>";
+		}	
 }
 
 ?>
