@@ -108,7 +108,7 @@ if (isset($_POST['submit'])) {
 	
 	$astDB=mysqli_connect('192.168.1.231','cron','1234','asterisk');
 
-	$astResult=mysqli_query($astDB,"SELECT user,full_name,phone_login,custom_one from vicidial_users where custom_one=\"retention\" ");
+	$astResult=mysqli_query($astDB,"SELECT user,full_name,phone_login,custom_one from vicidial_users where custom_one=\"retention\" and active='Y' ");
 
 	$users='';
 	$usersA=array();
@@ -146,6 +146,9 @@ if (isset($_POST['submit'])) {
 			echo "<td>".$usersA[$row['src']]."</td><td>".$row['src']."</td><td>".$row['total_calls']."</td><td>".(int)$min.".".(int)$sec."</td><td>".(int)$avgmin.".".(int)$avgsec."</td>";
 		echo "</tr>";
 	}
+	echo '<script type="text/javascript">
+	 		sortTable(0);
+		</script>';
 	foreach ($aa as $key => $value) {
 		echo"<tr>";
 			echo "<td>".$usersA[$value]."</td><td>".$value."</td><td>0</td><td>0</td><td>0</td>";
@@ -300,7 +303,5 @@ $('.sbtn').on('click', function(event) {
 
 <?php if ($_POST['date']) { ?>
 
-<script type="text/javascript">
-	 sortTable(0);
-</script>
+
 <?php } ?>
