@@ -10,6 +10,11 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="//unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.0.0/css/tableexport.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.0.0/js/tableexport.min.js"></script>
+
 <style>
 	*, ::after, ::before {
 	    box-sizing: border-box;
@@ -159,62 +164,27 @@ if (isset($_POST['submit'])) {
 ?>
 <?php if ($_POST['date']) { ?>
 
-<a style="float: right;margin: 30px" class="btn btn-warning ebtn" onclick="exportTableToCSV('<?php echo $_POST['date'] ?>.csv')">Export</a>
-
+<!-- <a style="float: right;margin: 30px" class="btn btn-warning ebtn" onclick="exportTableToCSV('Raporti i Telf Retention Dt <?php echo date('d.m.Y',strtotime($_POST['date'])) ?>.xls')">Export </a> -->
+ 
 <?php } ?>
 
 <center><div class="loader"></div></center>
 </div>
 
-
-
-
 <script type="text/javascript">
 
-
-function downloadCSV(csv, filename) {
-    var csvFile;
-    var downloadLink;
-
-    // CSV file
-    csvFile = new Blob([csv], {type: "text/csv"});
-
-    // Download link
-    downloadLink = document.createElement("a");
-
-    // File name
-    downloadLink.download = filename;
-
-    // Create a link to the file
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-
-    // Hide download link
-    downloadLink.style.display = "none";
-
-    // Add the link to DOM
-    document.body.appendChild(downloadLink);
-
-    // Click download link
-    downloadLink.click();
-}
-
-function exportTableToCSV(filename) {
-    var csv = [];
-	var rows = document.querySelectorAll("table tr");
-	
-    for (var i = 0; i < rows.length; i++) {
-		var row = [], cols = rows[i].querySelectorAll("td, th");
-		
-        for (var j = 0; j < cols.length; j++) 
-            row.push(cols[j].innerText);
-        
-		csv.push(row.join(","));		
-	}
-
-    // Download CSV file
-    downloadCSV(csv.join("\n"), filename);
-}
-
+TableExport(document.getElementsByTagName("table"), {
+    headers: true,                             
+    footers: true,                           
+    formats: ['xlsx'],          
+    filename: 'Raporti Retention Dt <?php echo date('d.m.Y',strtotime($_POST['date'])) ?>',                            
+    bootstrap: true,                          
+    exportButtons: true,                        
+    position: 'top',                        
+    ignoreRows: null,                        
+    ignoreCols: null,                          
+    trimWhitespace: true                        
+});
 
 function sortTable(n) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
