@@ -109,9 +109,10 @@ background: linear-gradient(to right, #78ffd6, #007991); /* W3C, IE 10+/ Edge, F
 if (isset($_POST['submit'])) {
 
 
-	$con=mysqli_connect('192.168.1.231','cdr','cdr2016','cdrdb');
+	//$con=mysqli_connect('192.168.1.231','cdr','cdr2016','cdrdb');
+	$db = new SQLite3('/var/log/asterisk/master.db');
 	
-	$astDB=mysqli_connect('192.168.1.231','cron','1234','asterisk');
+	$astDB=mysqli_connect('localhost','cron','1234','asterisk');
 
 	$astResult=mysqli_query($astDB,"SELECT user,full_name,phone_login,custom_one from vicidial_users where custom_one=\"retention\" and active='Y' ");
 
@@ -130,19 +131,19 @@ if (isset($_POST['submit'])) {
 
 	$query="SELECT  src,count(*) AS total_calls, sum(duration), sum(billsec) AS total_duration FROM cdr WHERE ($users) and DATE(`calldate`)=DATE('".$_POST['date']."') group by src ";
 
-	$result=mysqli_query($con,$query);
-	$result1=mysqli_query($con,$query);
+	$result=$db->query($query);
+	$result1=$db->query($query);
 
 	echo "<table id='table' class='table table-striped table-hover '><thead><th onclick='sortTable(0)'>Full Name</th><th onclick='sortTable(1)'>User</th><th onclick='sortTable(2)'>Calls</th><th onclick='sortTable(3)'>Minutes</th><th onclick='sortTable(4)'>AVG Minutes</th></thead>";
 
 	$phones2=array();
-	while ($all=$result1->fetch_assoc()) {
+	while ($all=$result1->fetch(SQLITE_ASSOC)) {
 		array_push($phones2,$all['src']);
 	}
 	
 	$aa=array_diff($phones,$phones2);
 
-	while ($row=$result->fetch_assoc()) {
+	while ($row=$result->fetch(SQLITE_ASSOC)) {
 		$min=$row['total_duration']/60;
 		$sec=$row['total_duration'] % 60;
 		$avgmin=$row['total_duration']/$row['total_calls']/60;
