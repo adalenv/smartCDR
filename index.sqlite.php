@@ -137,13 +137,13 @@ if (isset($_POST['submit'])) {
 	echo "<table id='table' class='table table-striped table-hover '><thead><th onclick='sortTable(0)'>Full Name</th><th onclick='sortTable(1)'>User</th><th onclick='sortTable(2)'>Calls</th><th onclick='sortTable(3)'>Minutes</th><th onclick='sortTable(4)'>AVG Minutes</th></thead>";
 
 	$phones2=array();
-	while ($all=$result1->fetch(SQLITE_ASSOC)) {
+	while ($all=$result1->fetchArray(SQLITE3_ASSOC)) {
 		array_push($phones2,$all['src']);
 	}
 	
 	$aa=array_diff($phones,$phones2);
 
-	while ($row=$result->fetch(SQLITE_ASSOC)) {
+	while ($row=$result->fetchArray(SQLITE3_ASSOC)) {
 		$min=$row['total_duration']/60;
 		$sec=$row['total_duration'] % 60;
 		$avgmin=$row['total_duration']/$row['total_calls']/60;
