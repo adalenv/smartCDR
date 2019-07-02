@@ -112,7 +112,7 @@ if (isset($_POST['submit'])) {
 	//$con=mysqli_connect('192.168.1.231','cdr','cdr2016','cdrdb');
 	$db = new SQLite3('/var/log/asterisk/master.db');
 	
-	$astDB=mysqli_connect('localhost','cron','1234','asterisk');
+	$astDB=mysqli_connect('localhost','user','pass','asteriskdb');
 
 	$astResult=mysqli_query($astDB,"SELECT user,full_name,phone_login,custom_one from vicidial_users where custom_one=\"retention\" and active='Y' ");
 
