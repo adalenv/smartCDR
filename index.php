@@ -109,9 +109,9 @@ background: linear-gradient(to right, #78ffd6, #007991); /* W3C, IE 10+/ Edge, F
 if (isset($_POST['submit'])) {
 
 
-	$con=mysqli_connect('192.168.1.231','cdr','cdr2016','cdrdb');
+	$con=mysqli_connect('192.168.1.1','user','passw','cdrdb');
 	
-	$astDB=mysqli_connect('192.168.1.231','cron','1234','asterisk');
+	$astDB=mysqli_connect('192.168.1.1','cron','passw','asteriskdb');
 
 	$astResult=mysqli_query($astDB,"SELECT user,full_name,phone_login,custom_one from vicidial_users where custom_one=\"retention\" and active='Y' ");
 
